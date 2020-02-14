@@ -70,25 +70,42 @@
 		}
 	</style>
 	<script>
+		//function
 		function outputText() {
 			var name = document.getElementById("name").value;
 			var genderRadios = document.getElementsByName("gender");
 			var genderValue = "";
+			
+			//loop
 			for (var i = 0; i < genderRadios.length; i++) {
 				if (genderRadios[i].checked){
 					genderValue = genderRadios[i].value;
 				}
 			}
+			//array
+			var genderArray = ["Mr.", "Mrs."];
 			var prefix = "";
+			
+			//if-else
 			if ("male" === genderValue){
-				prefix = "Mr."
+				prefix = genderArray[0];
 			} else {
-				prefix = "Mrs."
+				prefix = genderArray[1];
 			}
 
-			document.getElementById("outputText").innerHTML = "Welcome " + prefix + " " + name + "!!!";
+			//object
+			var msg = {name: "", prefix: ""};
+			msg.name = name;
+			msg.prefix = prefix;
+
+			outputWelcomeMsg(msg);
 		}
 
+		//function: 
+		function outputWelcomeMsg(msg) {
+			document.getElementById("outputText").innerHTML = "Welcome " + msg.prefix + " " + msg.name + "!!!";
+		}
+		//function	
 		function clearText() {
 			document.getElementById("outputText").innerHTML = "";
 			document.getElementById('name').value = "";
@@ -115,12 +132,14 @@
   	<p>Please input your name and gender!</p>
   	<div>
 		<form id="form">
+			<!-- inputs -->
 		  Name: 
 		  	<input type="text" id="name"><br><br>
 	     Gender: 
 	     	<input type="radio" name="gender" value="male" checked> Male
 		  	<input type="radio" name="gender" value="female"> Female<br><br>
 
+		  <!-- buttons -->
 		  <input type="button" onclick="outputText()" value="Submit">
 		  <input type="button" onclick="clearText()" value="Clear"><br>
 		</form>
