@@ -70,7 +70,7 @@
 		}
 	</style>
 	<script>
-		function outputText(){
+		function outputText() {
 			var name = document.getElementById("name").value;
 			var genderRadios = document.getElementsByName("gender");
 			var genderValue = "";
@@ -87,7 +87,12 @@
 			}
 
 			document.getElementById("outputText").innerHTML = "Welcome " + prefix + " " + name + "!!!";
-			}
+		}
+
+		function clearText() {
+			document.getElementById("outputText").innerHTML = "";
+			document.getElementById('name').value = "";
+		}
 	</script>
 </head>
 <body>
@@ -115,7 +120,8 @@
 	  <input type="radio" name="gender" value="male" checked> Male<br>
 	  <input type="radio" name="gender" value="female"> Female<br>
 
-	  <input type="button" onclick="outputText()" value="Submit"><br>
+	  <input type="button" onclick="outputText()" value="Submit">
+	  <input type="button" onclick="clearText()" value="Clear"><br>
 	</form>
 	<p id="outputText"></p>
 </body>
