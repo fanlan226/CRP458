@@ -2,12 +2,12 @@
 <html>
 <head>
 <title>Ex2</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body{
-            margin-left: 40px;
+            font-family: Arial, Helvetica, sans-serif;
         }
-
         h1 {
             font-size: 20px;
             color: blue;
@@ -20,21 +20,101 @@
         img {
             border: 3px solid black;
         }
+        .pageContent {
+            margin-left: 40px;
+        }
+        
+        .navbar {
+          overflow: hidden;
+          background-color: #333;
+        }
+
+        .navbar a {
+          float: left;
+          font-size: 16px;
+          color: white;
+          text-align: center;
+          padding: 14px 16px;
+          text-decoration: none;
+        }
+
+        .dropdown {
+          float: left;
+          overflow: hidden;
+        }
+
+        .dropdown .dropbtn {
+          font-size: 16px;  
+          border: none;
+          outline: none;
+          color: white;
+          padding: 14px 16px;
+          background-color: inherit;
+          font-family: inherit;
+          margin: 0;
+        }
+
+        .navbar a:hover, .dropdown:hover .dropbtn {
+          background-color: red;
+        }
+
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+        }
+
+        .dropdown-content a {
+          float: none;
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          text-align: left;
+        }
+
+        .dropdown-content a:hover {
+          background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+          display: block;
+        }
     </style>
+</head>
 <body>
-    <h1>Fan's Exercise Two</h1>
-    <h4>I chose Olympic Sculpture Park because it is a cool public park situated at the northen end of the Seattle seawall above a railroad to bridge two isolated park together.</h4>
+    <div class="navbar">
+      <a href="../index.html">Home</a>
+      <div class="dropdown">
+        <button class="dropbtn">Assignments 
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <a href="../exercise1/index.html">Exercise 1</a>
+          <a href="index.html">Exercise 2</a>
+          <a href="https://github.com/fanlan226/CRP458/blob/master/exercise3/AgriculturalDrainageWells.geojson">Exercise 3</a>
+          <a href="../exercise4/index.html">Exercise 4</a>
+        </div>
+      </div> 
+    </div>
+    <div class="pageContent">
+        <h1>Fan's Exercise Two</h1>
+        <h4>I chose Olympic Sculpture Park because it is a cool public park situated at the northen end of the Seattle seawall above a railroad to bridge two isolated park together.</h4>
 
-    <p>Image One</p>    
-    <img src="Olympic-sculpture-park-by-Charles-Anderson-Atelier-ps-16.jpg" width="425" height="350" alt="map of ISU"/>
+        <p>Image One</p>    
+        <img src="Olympic-sculpture-park-by-Charles-Anderson-Atelier-ps-16.jpg" width="425" height="350" alt="map of ISU"/>
 
-    <p>Image Two</p>
-    Please click <a href="https://e23aa69f-a-62cb3a1a-s-sites.googlegroups.com/site/graceguts/poems/silver-notes-introduction/silver-notes-map/Olympic%20Sculpture%20Park%20Map.jpg?attachauth=ANoY7cowjz6cRf7gRxU_HwslQi82mpWz25y0XuJNRoCd7dKpjxfbgQV3d-7rkFsZnJqslOU4frZ8nYTNJgOl4uoTPS71pBWkHinpSCaT1LbIEoo8-M-UgCIdUIjsnFItbHeaK7beWsaSW-d68ZqdWwZnzsEXmbBz5c7Oau1QKO6aNX6jn5PlQTLYaN1J_8X4XWaD59vOQA7RKvATFEJK1K9aBRMGx29GZFh5dZBBMV2Lt20agBV6YskkxTGcspW0V7NrlqFyz3dDwDyI4_HWPH4Jqxs-uiciEusG1v9Xfe-li4o_-bpNEUQ%3D&attredirects=0">here</a> to see the image of Olympic Sculpture Park.
+        <p>Image Two</p>
+        Please click <a href="https://e23aa69f-a-62cb3a1a-s-sites.googlegroups.com/site/graceguts/poems/silver-notes-introduction/silver-notes-map/Olympic%20Sculpture%20Park%20Map.jpg?attachauth=ANoY7cowjz6cRf7gRxU_HwslQi82mpWz25y0XuJNRoCd7dKpjxfbgQV3d-7rkFsZnJqslOU4frZ8nYTNJgOl4uoTPS71pBWkHinpSCaT1LbIEoo8-M-UgCIdUIjsnFItbHeaK7beWsaSW-d68ZqdWwZnzsEXmbBz5c7Oau1QKO6aNX6jn5PlQTLYaN1J_8X4XWaD59vOQA7RKvATFEJK1K9aBRMGx29GZFh5dZBBMV2Lt20agBV6YskkxTGcspW0V7NrlqFyz3dDwDyI4_HWPH4Jqxs-uiciEusG1v9Xfe-li4o_-bpNEUQ%3D&attredirects=0">here</a> to see the image of Olympic Sculpture Park.
 
-    <p>Image Three</p>
-    
-    <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-122.36280031339736%2C47.61405288904862%2C-122.35170669691176%2C47.61851517356635&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/>
-    <small><a href="https://www.openstreetmap.org/#map=17/47.61628/-122.35725">View Larger Map</a></small>
-</body>
+        <p>Image Three</p>
+        
+        <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=-122.36280031339736%2C47.61405288904862%2C-122.35170669691176%2C47.61851517356635&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/>
+        <small><a href="https://www.openstreetmap.org/#map=17/47.61628/-122.35725">View Larger Map</a></small>
+    </div>    
+    </body>
 </html>
 
