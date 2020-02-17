@@ -1,0 +1,82 @@
+  <!DOCTYPE html>
+<html>
+	<title>Exercise 5</title>
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+   		<style>
+   			#map {
+		     width: 700px;
+		     height: 500px;
+ 			}
+
+ 			.center-screen {
+		  		position: fixed; 
+  				top: 50%;
+  				left: 50%;
+  				transform: translate(-50%, -50%);
+			}
+   		</style>
+	</head>
+	<body>
+		<div id='map' class="center-screen"></div>
+
+		<br>Pan to <a href="javascript:seattleAirport()">Seattle-Tacoma Internation Airport</a>
+		
+    	<br><a href="javascript:zoomOut()">Zoom out to level 10</a><br>
+
+    	<button id="visitBtn">Visit Olympic Sculpture Park</button>
+
+		<script>
+			var locations = [
+    			[47.620513, -122.349289, "Space Needle"],
+    			[47.608384, -122.340342, "The Gum Wall"],
+    			[47.610050, -122.342579, "First Starbucks"],
+				[47.615496, -122.339785, "The Spheres"],
+				[47.616633, -122.355319, "Olympic Sculpture Park"],
+				[47.450308, -122.308806, "Seattle-Tacoma Internation Airport"]];
+
+   			var map = L.map('map').setView([locations[3][0], locations[3][1]], 14);
+
+   			L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    				maxZoom: 18,
+    				id: 'mapbox/streets-v11',
+    				// This is a unique access token, you must register for your own from https://account.mapbox.com/access-tokens/
+			    accessToken: 'pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ' 
+			}).addTo(map);
+
+
+   			for (i = 0; i < locations.length; i++) {
+   				L.marker([locations[i][0], locations[i][1]]).addTo(map)
+			    .bindPopup(locations[i][2])
+			    .addTo(map);
+   			}
+
+   			//----------Links below the Map----------
+
+	        //Pan to SEA
+	        function seattleAirport() {
+	            map.panTo(new L.LatLng(47.450308, -122.308806));
+	        }
+
+	        //set Zoom
+	        function zoomOut() {
+	            map.setZoom(10);
+	        };
+
+
+	        //add an event listener for a click event on the button
+	        document.getElementById("visitBtn").addEventListener("click", visit);
+
+	        //visit lar marzocco cafe function
+	        function visit() {
+	            map.setView(new L.LatLng(47.616633, -122.355319), 24);
+	        };    
+   		</script>
+	</body>
+</html>
