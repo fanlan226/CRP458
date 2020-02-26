@@ -3,34 +3,121 @@
 	<title>Exercise 5</title>
 	<head>
 		<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
-		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-   crossorigin=""></script>
    		<style>
    			#map {
 		     width: 700px;
 		     height: 500px;
+		     margin-top: 100px;
  			}
 
+			#pageContent{
+				margin-top: 10px;
+		  	}
  			.center-screen {
 		  		position: fixed; 
   				top: 50%;
   				left: 50%;
   				transform: translate(-50%, -50%);
+  				
+			}
+
+			body {
+              font-family: Arial, Helvetica, sans-serif;
+            }
+
+			.navbar {
+			  overflow: hidden;
+			  background-color: #333;
+			}
+
+			.navbar a {
+			  float: left;
+			  font-size: 16px;
+			  color: white;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+
+			.dropdown {
+			  float: left;
+			  overflow: hidden;
+			}
+
+			.dropdown .dropbtn {
+			  font-size: 16px;  
+			  border: none;
+			  outline: none;
+			  color: white;
+			  padding: 14px 16px;
+			  background-color: inherit;
+			  font-family: inherit;
+			  margin: 0;
+			}
+
+			.navbar a:hover, .dropdown:hover .dropbtn {
+			  background-color: red;
+			}
+
+			.dropdown-content {
+			  display: none;
+			  position: absolute;
+			  background-color: #f9f9f9;
+			  min-width: 160px;
+			  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			  z-index: 1;
+			}
+
+			.dropdown-content a {
+			  float: none;
+			  color: black;
+			  padding: 12px 16px;
+			  text-decoration: none;
+			  display: block;
+			  text-align: left;
+			}
+
+			.dropdown-content a:hover {
+			  background-color: #ddd;
+			}
+
+			.dropdown:hover .dropdown-content {
+			  display: block;
 			}
    		</style>
 	</head>
 	<body>
-		<div id='map' class="center-screen"></div>
+		<div class="navbar">
+          <a href="../index.html">Home</a>
+          <div class="dropdown">
+            <button class="dropbtn">Assignments 
+              <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="../exercise1/index.html">Exercise 1</a>
+              <a href="../exercise2/index.html">Exercise 2</a>
+              <a href="https://github.com/fanlan226/CRP458/blob/master/exercise3/AgriculturalDrainageWells.geojson">Exercise 3</a>
+              <a href="../exercise4/index.html">Exercise 4</a>
+              <a href="index.html">Exercise 5</a>
+              <a href="../assignment1/index.html">Assignment 1</a>
+            </div>
+          </div> 
+        </div>
+   		<div id='pageContent'>
+			<div id='map' class='center-screen'></div>
 
-		<br>Pan to <a href="javascript:seattleAirport()">Seattle-Tacoma Internation Airport</a>
-		
-    	<br><a href="javascript:zoomOut()">Zoom out to level 10</a><br>
+			<br>Pan to <a href="javascript:seattleAirport()">Seattle-Tacoma Internation Airport</a>
+			
+	    	<br><a href="javascript:zoomOut()">Zoom out to level 10</a><br>
 
-    	<button id="visitBtn">Visit Olympic Sculpture Park</button>
-
+	    	<button id="visitBtn">Visit Olympic Sculpture Park</button>
+    	</div>
+    	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
 		<script>
 			var locations = [
     			[47.620513, -122.349289, "Space Needle"],
