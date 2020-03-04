@@ -1,6 +1,6 @@
  <!DOCTYPE html>
 <html>
-	<title>Exercise 5</title>
+	<title>Exercise 9</title>
 	<head>
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +9,8 @@
 		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
+   		<script src="../geojson/us_states.geojson"></script>
+   		<script src="../geojson/us_cities.geojson"></script>
    		<style>
    			#map {
 		     width: 700px;
@@ -117,33 +119,25 @@
 			<div id='map' class='center-screen'></div>
     	</div>
 		<script>
-			var markerLayer = L.layerGroup();
-			var polylineLayer = L.layerGroup();
-			var polygonLayer = L.layerGroup();
-			var circleLayer = L.layerGroup();
-			var circleMarkerLayer = L.layerGroup();
-
-
-			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+   			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
 			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
 			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 			mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ';
 
-			var locations = [
-    			[47.620513, -122.349289, "Space Needle"],
-    			[47.608384, -122.340342, "The Gum Wall"],
-    			[47.610050, -122.342579, "First Starbucks"],
-				[47.615496, -122.339785, "The Spheres"],
-				[47.616633, -122.355319, "Olympic Sculpture Park"],
-				[47.450308, -122.308806, "Seattle-Tacoma Internation Airport"]];
+   			// GeoJSON polygon layer
+        	var polygonLayer = L.geoJSON(us_states, {style: polygonStyle});
 
-			var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
-			var	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+        	// GeoJSON point layer
+        	var pointLayer = L.geoJSON(us_cities, {filter: isCapitol, onEachFeature: onEachFeature});
 
-			var map = L.map('map', {
-				center: [locations[3][0], locations[3][1]],
-				zoom: 14,
-				layers: [streets, markerLayer]
+        	// Base maps
+        	var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+        	var	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+        	var map = L.map('map', {
+				center: [37.8, -96],
+				zoom: 4,
+				layers: [grayscale, polygonLayer]
 			});
 
 			var baseLayers = {
@@ -152,60 +146,47 @@
 			};
 
 			var overlays = {
-				"Place Markers": markerLayer,
-				"Polyline": polylineLayer,
-				"Polygon": polygonLayer,
-				"Circle": circleLayer,
-				"Circle Markers": circleMarkerLayer
+				"Population Density": polygonLayer,
+				"Capital Cities": pointLayer
 			};
 
 			L.control.layers(baseLayers, overlays).addTo(map);
 
-   			// Adding Marker for each location
-   			for (i = 0; i < locations.length; i++) {
-   				L.marker([locations[i][0], locations[i][1]]).addTo(map)
-			    .bindPopup(locations[i][2])
-			    .addTo(markerLayer);
+        	function getStateColor(density) {
+			    return density > 1000 ? '#800026' :
+			           density > 500  ? '#BD0026' :
+			           density > 200  ? '#E31A1C' :
+			           density > 100  ? '#FC4E2A' :
+			           density > 50   ? '#FD8D3C' :
+			           density > 10   ? '#FED976' :
+										'#FFEDA0';
 			}
 
-   			// Adding to polyline to map
-         	var polylineLatlngs = [
-	            [locations[3][0], locations[3][1]],
-	            [locations[0][0], locations[0][1]],
-	            [locations[4][0], locations[4][1]]
-         	];
-         	var polyline = L.polyline(polylineLatlngs, {color: 'red'});
-         	polyline.addTo(polylineLayer);
+			function polygonStyle(feature) {
+			    return {
+			        fillColor: getStateColor(feature.properties.density),
+			        weight: 2,
+			        opacity: 1,
+			        color: 'white',
+			        dashArray: '2',
+			        fillOpacity: 0.7
+		    	};
+			}
 
-         	// Adding to polygon line to map
-         	var polylineLatlngs = [
-	            [locations[4][0], locations[4][1]],
-	            [locations[2][0], locations[2][1]],
-	            [locations[3][0], locations[3][1]],
-	            [locations[4][0], locations[4][1]]
-         	];
-         	var polygon = L.polygon(polylineLatlngs, {color: 'yellow'});
-         	polygon.addTo(polygonLayer);
+			function isCapitol(feature) {
+    			return feature.properties.capital === "2" ? true : false;
+			}
 
-         	// Adding circle line to map
-         	var circleCenter = [locations[1][0], locations[1][1]];
-         	var circleOptions = {
-		        color: 'blue',
-		        fillColor: 'blue',
-		        fillOpacity: 0
-         	}
-         	var circle = L.circle(circleCenter, 500, circleOptions);
-         	circle.bindPopup("circle").addTo(circleLayer);
+			function onEachFeature(feature, layer) {
+				layer.on({
+					click: popup(feature, layer)
+				});
+			}
 
-         	// Adding circle marker to map
-         	var circleMarkerCenter = [locations[0][0], locations[0][1]];
-         	var circleMarkerOptions = {
-		        color: 'red',
-		        fillColor: 'red',
-		        fillOpacity: 0
-         	}
-         	var circleMarker = L.circleMarker(circleMarkerCenter, 500, circleMarkerOptions);
-         	circleMarker.bindPopup("circle marker").addTo(circleMarkerLayer);
+			function popup(feature, layer) {
+				layer.bindPopup(feature.properties.name);
+			}
+
    		</script>
 	</body>
 </html>
