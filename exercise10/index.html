@@ -1,6 +1,6 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-	<title>Exercise 9</title>
+	<title>Exercise 10</title>
 	<head>
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,6 +27,18 @@
   				left: 50%;
   				transform: translate(-50%, -50%);
   				
+			}
+
+			.legend {
+			    line-height: 18px;
+			    color: #555;
+			}
+			.legend i {
+			    width: 18px;
+			    height: 18px;
+			    float: left;
+			    margin-right: 8px;
+			    opacity: 0.7;
 			}
 
 			body {
@@ -110,8 +122,8 @@
               <a href="../exercise6/index.html">Exercise 6</a>
               <a href="../exercise7/index.html">Exercise 7</a>
               <a href="../exercise8/index.html">Exercise 8</a>
-              <a href="index.html">Exercise 9</a>
-              <a href="../exercise10/index.html">Exercise 10</a>
+              <a href="../exercise9/index.html">Exercise 9</a>
+              <a href="index.html">Exercise 10</a>
               <a href="../assignment1/index.html">Assignment 1</a>
             </div>
           </div> 
@@ -187,6 +199,25 @@
 			function popup(feature, layer) {
 				layer.bindPopup(feature.properties.name);
 			}
+
+			//Custom legend
+			var legend = L.control({position: 'bottomright'});
+
+			legend.onAdd = function (map) {
+			    var legendContainer = L.DomUtil.create('div', 'info legend'),
+			        density = [0, 10, 50, 100, 200, 500, 1000],
+			        labels = [];
+
+			    for (var i = 0; i < density.length; i++) {
+			        legendContainer.innerHTML +=
+			            '<i style="background:' + getStateColor(density[i] + 1) + '"></i> ' +
+			            density[i] + (density[i + 1] ? '&ndash;' + density[i + 1] + '<br>' : '+');
+			    }
+
+			    return legendContainer;
+			};
+
+			legend.addTo(map);
 
    		</script>
 	</body>
