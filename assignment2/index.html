@@ -6,9 +6,6 @@
     	<meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
-		<!--Load in Leaflet Marker Cluster required files-->
-	    <link rel="stylesheet" href="https://profseeger.github.io/LVM-Code/classes/Leaflet.markercluster/dist/MarkerCluster.css" />
-	    <link rel="stylesheet" href="https://profseeger.github.io/LVM-Code/classes/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
 		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
         <script src="https://leaflet.github.io/Leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
    		<script src="../geojson/us_states.geojson"></script>
@@ -218,7 +215,6 @@
 
 			L.control.layers(baseLayers, overlays).addTo(map);
 
-
 			
 			//Get different color for different caner count
         	function getCancerCountColor(count) {
@@ -302,6 +298,7 @@
             // control that shows cancer rate info on hover
             var messageGroup = L.control({position: 'topleft'});
 
+
             messageGroup.onAdd = function (map) {
 				this._div = L.DomUtil.create('div', 'info');
 				this.update();
@@ -344,6 +341,7 @@
 			    } 
 			});
 
+			// Determine whether a city is capitol or not
 			function isCapitol(feature) {
     			return feature.properties.capital === "2" ? true : false;
 			}
