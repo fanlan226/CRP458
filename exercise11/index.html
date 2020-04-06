@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-	<title>Exercise 10</title>
+	<title>Exercise 11</title>
 	<head>
 		<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +9,8 @@
 		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
-   		<script src="../geojson/us_states.geojson"></script>
-   		<script src="../geojson/us_cities.geojson"></script>
+   		<!-- Load Esri Leaflet from CDN -->
+		<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
    		<style>
    			#map {
 		     width: 700px;
@@ -123,8 +123,8 @@
               <a href="../exercise7/index.html">Exercise 7</a>
               <a href="../exercise8/index.html">Exercise 8</a>
               <a href="../exercise9/index.html">Exercise 9</a>
-              <a href="index.html">Exercise 10</a>
-              <a href="../exercise11/index.html">Exercise 11</a>
+              <a href="../exercise10/index.html">Exercise 10</a>
+              <a href="index.html">Exercise 11</a>
               <a href="../assignment1/index.html">Assignment 1</a>
               <a href="../assignment2/index.html">Assignment 2</a>
             </div>
@@ -134,93 +134,39 @@
 			<div id='map' class='center-screen'></div>
     	</div>
 		<script>
-   			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ';
-
-   			// GeoJSON polygon layer
-        	var polygonLayer = L.geoJSON(us_states, {style: polygonStyle});
-
-        	// GeoJSON point layer
-        	var pointLayer = L.geoJSON(us_cities, {filter: isCapitol, onEachFeature: onEachFeature});
-
         	// Base maps
-        	var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
-        	var	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+        	var LiDAR_Color_Hillshade = L.tileLayer.wms("https://ortho.gis.iastate.edu/arcgis/services/ortho/LiDAR_Color_Hillshade/ImageServer/WMSServer", {
+    				layers: 'LiDAR_Color_Hillshade',
+				    format: 'image/png',
+				    transparent: true,
+				    attribution: "Iowa State University GIS Facility &copy; 2020, Iowa DNR"
+			});
+
+			var cronaVirus_layer = L.esri.featureLayer({
+				url: 'https://services.arcgis.com/vPD5PVLI6sfkZ5E4/ArcGIS/rest/services/IA_COVID19_Cases/FeatureServer/0',
+				style: function () {
+          			return { color: "#70ca49", weight: 2 };
+        		}
+			});
+
+			var popupTemplate = "<h3>{Name}</h3>Confirmed: {Confirmed}<br>Deaths: {Deaths}<br>";
+
+      		cronaVirus_layer.bindPopup(function(e){
+        	return L.Util.template(popupTemplate, e.feature.properties)
+      		});
 
         	var map = L.map('map', {
-				center: [37.8, -96],
-				zoom: 4,
-				layers: [grayscale, polygonLayer]
+				center: [42.026372, -93.647034],
+				zoom: 7,
+				layers: [LiDAR_Color_Hillshade]
 			});
 
 			var baseLayers = {
-				"Streets": streets,
-				"Grayscale": grayscale
+				"Hillshade": LiDAR_Color_Hillshade,
+				"Crona Virus": cronaVirus_layer
 			};
 
-			var overlays = {
-				"Population Density": polygonLayer,
-				"Capital Cities": pointLayer
-			};
-
-			L.control.layers(baseLayers, overlays).addTo(map);
-
-        	function getStateColor(density) {
-			    return density > 1000 ? '#800026' :
-			           density > 500  ? '#BD0026' :
-			           density > 200  ? '#E31A1C' :
-			           density > 100  ? '#FC4E2A' :
-			           density > 50   ? '#FD8D3C' :
-			           density > 10   ? '#FED976' :
-										'#FFEDA0';
-			}
-
-			function polygonStyle(feature) {
-			    return {
-			        fillColor: getStateColor(feature.properties.density),
-			        weight: 2,
-			        opacity: 1,
-			        color: 'white',
-			        dashArray: '2',
-			        fillOpacity: 0.7
-		    	};
-			}
-
-			function isCapitol(feature) {
-    			return feature.properties.capital === "2" ? true : false;
-			}
-
-			function onEachFeature(feature, layer) {
-				layer.on({
-					click: popup(feature, layer)
-				});
-			}
-
-			function popup(feature, layer) {
-				layer.bindPopup(feature.properties.name);
-			}
-
-			//Custom legend
-			var legend = L.control({position: 'bottomright'});
-
-			legend.onAdd = function (map) {
-			    var legendContainer = L.DomUtil.create('div', 'info legend'),
-			        density = [0, 10, 50, 100, 200, 500, 1000],
-			        labels = [];
-
-			    for (var i = 0; i < density.length; i++) {
-			        legendContainer.innerHTML +=
-			            '<i style="background:' + getStateColor(density[i] + 1) + '"></i> ' +
-			            density[i] + (density[i + 1] ? '&ndash;' + density[i + 1] + '<br>' : '+');
-			    }
-
-			    return legendContainer;
-			};
-
-			legend.addTo(map);
-
+			L.control.layers(baseLayers).addTo(map);
    		</script>
 	</body>
 </html>
