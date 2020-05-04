@@ -1,228 +1,361 @@
-<!DOCTYPE html>
-<html>
-	<title>Exercise 11</title>
-	<head>
-		<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
-		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
-   		<!-- Load Esri Leaflet from CDN -->
-		<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
-   		<style>
-   			#map {
-		     width: 700px;
-		     height: 500px;
-		     margin-top: 10px;
- 			}
+      <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+    <script src="../geojson/us_states.geojson"></script>
+    <script src="../geojson/us_cities.geojson"></script>
+    <style type="text/css">
+      .map {
+         height: 500px;
+      }
 
-			#pageContent{
-				margin-top: 3px;
-		  	}
- 			.center-screen {
-		  		position: fixed; 
-  				top: 50%;
-  				left: 50%;
-  				transform: translate(-50%, -50%);
-  				
-			}
+      .info { 
+          padding: 6px 8px; 
+          font: 14px/16px Arial, Helvetica, sans-serif; 
+          background: white; 
+          background: rgba(255,255,255,0.8); 
+          box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+          border-radius: 5px; 
+      } 
 
-			.legend {
-			    line-height: 18px;
-			    color: #555;
-			}
-			.legend i {
-			    width: 18px;
-			    height: 18px;
-			    float: left;
-			    margin-right: 8px;
-			    opacity: 0.7;
-			}
+      .info h4 { 
+          margin: 0 0 5px; 
+          color: #777; 
+      }
 
-			body {
-              font-family: Arial, Helvetica, sans-serif;
-            }
+      .legend {
+          text-align: left;
+          line-height: 18px;
+          color: #555;
+      }
 
-			.navbar {
-			  overflow: hidden;
-			  background-color: #333;
-			}
+      .legend i {
+          width: 18px;
+          height: 18px;
+          float: left;
+          margin-right: 8px;
+          opacity: 0.7;
+      }
 
-			.navbar a {
-			  float: left;
-			  font-size: 16px;
-			  color: white;
-			  text-align: center;
-			  padding: 14px 16px;
-			  text-decoration: none;
-			}
+      .top {
+        background: black; 
+        color: white;
+      }
 
-			.dropdown {
-			  float: left;
-			  overflow: hidden;
-			}
+      .bottom {
+        background: black; 
+        color: white;
+        margin-top: 40px;
+        padding: 10px;
+      }
 
-			.dropdown .dropbtn {
-			  font-size: 16px;  
-			  border: none;
-			  outline: none;
-			  color: white;
-			  padding: 14px 16px;
-			  background-color: inherit;
-			  font-family: inherit;
-			  margin: 0;
-			}
+      .content {
+        margin-top: 20px;
+      }
 
-			.navbar a:hover, .dropdown:hover .dropbtn {
-			  background-color: red;
-			}
+      .map_content {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+    </style>
 
-			.dropdown-content {
-			  display: none;
-			  position: absolute;
-			  background-color: #f9f9f9;
-			  min-width: 160px;
-			  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-			  z-index: 1;
-			}
-
-			.dropdown-content a {
-			  float: none;
-			  color: black;
-			  padding: 12px 16px;
-			  text-decoration: none;
-			  display: block;
-			  text-align: left;
-			}
-
-			.dropdown-content a:hover {
-			  background-color: #ddd;
-			}
-
-			.dropdown:hover .dropdown-content {
-			  display: block;
-			}
-   		</style>
-	</head>
-	<body>
-		<div class="navbar">
-          <a href="../index.html">Home</a>
-          <div class="dropdown">
-            <button class="dropbtn">Assignments 
-              <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content">
-              <a href="../exercise1/index.html">Exercise 1</a>
-              <a href="../exercise2/index.html">Exercise 2</a>
-              <a href="https://github.com/fanlan226/CRP458/blob/master/exercise3/AgriculturalDrainageWells.geojson">Exercise 3</a>
-              <a href="../exercise4/index.html">Exercise 4</a>
-              <a href="../exercise5/index.html">Exercise 5</a>
-              <a href="../exercise6/index.html">Exercise 6</a>
-              <a href="../exercise7/index.html">Exercise 7</a>
-              <a href="../exercise8/index.html">Exercise 8</a>
-              <a href="../exercise9/index.html">Exercise 9</a>
-              <a href="../exercise10/index.html">Exercise 10</a>
-              <a href="index.html">Exercise 11</a>
-              <a href="../assignment1/index.html">Assignment 1</a>
-              <a href="../assignment2/index.html">Assignment 2</a>
-            </div>
-          </div> 
+    <title>Final Project</title>
+  </head>
+  <body>
+    <div class="container-lg top">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-10 col-md-10 col-lg-10'>
+          <h1>Mapping the impact of the U.S. 2020 Covid-19</h1>
         </div>
-   		<div id='pageContent'>
-			<div id='map' class='center-screen'></div>
-    	</div>
-		<script>
-			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-			mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ';
+      </div>
+    </div>
 
-			var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
-			var	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <h3>Introduction</h3>
+          <p>In early March, the World Health Organization (WHO) declared COVID-19 a pandemic outbreak occurring over a wide geographic area and affecting an exceptionally high proportion of the population. According to the WHO, by May 3, 2020, there are more than 3.3 million confirmed cases of people with COVID-19 and almost 238,000 people have died from the disease globally.
+ 
+          The U.S. declared a national emergency in mid-March, and the case numbers are multiplying, as different parts of the country experience varied levels of COVID-19 activity. All 50 states have reported confirmed cases, and there have been large clusters in certain areas of the country. The Centers for Disease Control and Prevention (CDC) currently putting the total confirmed and probable cases at more than 1.1 million, and estimating more than 65,000 deaths.</p>
+        </div>
+      </div>
+    </div>
 
-			var cronaVirus_layer = L.esri.featureLayer({
-				url: 'https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1',
-        		where: "Country_Region = 'US'",
-        		pointToLayer: function (feature, latlng) {
-                	return L.circleMarker(latlng, markerOptions);
-            	},
-            	style: function(feature) {
-	                return {
-	                  radius: getRaidus(feature.properties.Confirmed),
-	                };
-            	},
-            	onEachFeature: addPopups
-			});
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <p style="color:black; opacity:0.4"><strong>TOTAL CASES 1,122,486</strong></p>
+          <p style="color:red; opacity:0.6; margin-top: -20px"><strong>TOTAL DEATHS 65,735</strong></p>
+        </div>
+      </div>
+    </div>
 
-			var popupTemplate = "<h3>{Province_State}</h3>Confirmed: {Confirmed}<br>Deaths: {Deaths}<br>" ;
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <h3>COVID-19 MAP</h3>
+          <p>The COVID-19 map shows and the up-to-date number of coronavirus confirmed case and its related deaths in each state of the U.S. territory. The map uses grey graduated circle markers to demonstrate its number of confirmed COVID-19 cases by states. While red circles are highlighting number of deaths in each state. We can also see the death rate from the size ratio of these two circles.</p>
+        </div>
+      </div>
+    </div>
 
-        	var map = L.map('map', {
-				center: [37.8, -96],
-				zoom: 4,
-				layers: [grayscale, cronaVirus_layer]
-			});
+    <div class="container-lg map_content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div id='map_canvas' class='map col-sm-10 col-md-10 col-lg-10'></div>
+      </div>
+    </div>
 
-			var baseLayers = {
-				"Streets": streets,
-				"Grayscale": grayscale
-			};
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <h3>POPULATION DENSITY MAP</h3>
+          <p>Density is a factor in this pandemic. The population density map shows population number ranges across the nation. It implies that areas/states with clustering of people in high population density are also with populous urban centers, like NY, CA, MA, IL, etc. Compared with the COVID-19 map, these areas with large flows of visitors, tourists, commuters, diverse global populations and mass residents that are vulnerable to infectious disease.</p>
+        </div>
+      </div>
+    </div>
 
-			var overlays = {
-				"Crona Virus": cronaVirus_layer
-			};
+    <div class="container-lg map_content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div id='map_canvas2' class='map col-sm-10 col-md-10 col-lg-10'></div>
+      </div>
+    </div>
 
-			L.control.layers(baseLayers, overlays).addTo(map);
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <h3>CONCLUSION</h3>
+          <p>Cities differ along many characters — population size, aging, education level, culture and convention, religiosity, levels of social capital, industrial structure, natural resources, and more. All of these conditions and other factors may affect its vulnerability to the COVID-19.</p>
+        </div>
+      </div>
+    </div>
 
-			var markerOptions = {
-				fillColor: "red",
-	            color: "#000",
-	            weight: 1,
-	            opacity: 1,
-	            fillOpacity: 0.8
-			}
+    <div class="container-lg content">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <div class='col-sm-12 col-md-12 col-lg-12'>
+          <h3>Resources</h3>
+          <p>WHO: <a href="https://www.who.int/">https://www.who.int/</a></p>
+          <p>CDC: <a href="https://www.cdc.gov/">https://www.cdc.gov/</a></p>
+          <p>Data source: <a href="https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/">https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/</a></p> 
+        </div>
+      </div>
+    </div>
 
-			function addPopups(feature, layer) {
-            	layer.bindPopup(function(e){
-        			return L.Util.template(popupTemplate, e.feature.properties)
-      			});
-        	}
+    <div class="container-lg bottom">
+      <div class="row justify-content-sm-center justify-content-md-center justify-content-lg-center">  
+        <div class="text-center">
+          Fan Lan<br>
+          Landscape Architecture<br>
+          Iowa State University<br>
+          Spring, 2020<br>
+        </div>      
+      </div>
+    </div>
 
-        	function getRaidus(confirmedCases) {
-        		if (confirmedCases > 100000) {
-        			return confirmedCases / 6000;
-        		} else if (confirmedCases > 5000) {
-					return confirmedCases / 3000;
-        		} else if (confirmedCases > 3000) {
-        			return confirmedCases / 1500;
-        		} else if (confirmedCases > 1000) {
-    			  	return confirmedCases / 500;
-        		} else if (confirmedCases > 500) {
-        			return confirmedCases / 100;
-        		} else {
-        			return 20;
-        		}
-        	}
+    <script>
+      /**
+      * Covid-19 Map
+      */
+      var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ';
 
-			//Custom legend
-			// var legend = L.control({position: 'bottomright'});
+      var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+      var streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
 
-			// legend.onAdd = function (map) {
-			//     var legendContainer = L.DomUtil.create('div', 'info legend'),
-			//         confirmed_cases = [0, 3000, 5000, 10000, 20000, 50000, 100000],
-			//         labels = [];
+      var cronaVirus_layer = L.esri.featureLayer({
+          url: 'https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1',
+          where: "Country_Region = 'US'",
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, markerOptions1);
+          },
+          style: function(feature) {
+              return {
+                radius: calcPropRadius(feature.properties.Confirmed, 0.01)
+              };
+          },
+          onEachFeature: confrimedFeature
+      });
 
-			//     for (var i = 0; i < confirmed_cases.length; i++) {
-			//         legendContainer.innerHTML +=
-			//             '<i style="background:' + getStateColor(confirmed_cases[i] + 1) + '"></i> ' +
-			//             confirmed_cases[i] + (confirmed_cases[i + 1] ? '&ndash;' + confirmed_cases[i + 1] + '<br>' : '+');
-			//     }
+      var cronaVirus_layer_deaths = L.esri.featureLayer({
+          url: 'https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1',
+          where: "Country_Region = 'US'",
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, markerOptions2);
+          },
+          style: function(feature) {
+              return {
+                radius: calcPropRadius(feature.properties.Deaths, 0.02)
+              };
+          },
+          onEachFeature: deathsFeature
+      });
 
-			//     return legendContainer;
-			// };
+      var map = L.map('map_canvas', {
+        center: [37.8, -96],
+        zoom: 4,
+        layers: [grayscale, cronaVirus_layer, cronaVirus_layer_deaths]
+      });
 
-			// legend.addTo(map);
-   		</script>
-	</body>
+      var baseLayers = {
+        "Grayscale": grayscale,
+        "Streets": streets
+      };
+
+      var overlays = {
+        "Crona Virus Confirmed Cases": cronaVirus_layer,
+        "Crona Virus Deaths": cronaVirus_layer_deaths
+      };
+
+      L.control.layers(baseLayers, overlays).addTo(map);
+
+      var markerOptions1 = {
+        fillColor: "black",
+        weight: 0,
+        opacity: 1,
+        fillOpacity: 0.25
+      }
+
+      var markerOptions2 = {
+        fillColor: "red",
+        weight: 0,
+        opacity: 1,
+        fillOpacity: 0.6
+      }
+
+      var popupTemplate = "<h3>{Province_State}</h3><strong>Confirmed: {Confirmed}<strong><br><strong>Deaths: {Deaths}<strong><br>" ;
+
+      function confrimedFeature(feature, layer) {
+          layer.bindPopup(function(e){
+          return L.Util.template(popupTemplate, e.feature.properties)
+        });
+      }
+
+      function deathsFeature(feature, layer) {
+          layer.bindPopup(function(e){
+          return L.Util.template(popupTemplate, e.feature.properties)
+        });
+      }
+
+      function calcPropRadius(attributeValue, scaleFactor) {
+        var area = attributeValue * scaleFactor;
+        return Math.sqrt(area / Math.PI) * 2;     
+      }
+
+      //Custom legend
+      var legend = L.control({position: 'bottomright'});
+
+      legend.onAdd = function (map) {
+          var legendContainer = L.DomUtil.create('div', 'info legend'),
+              labels = [];
+
+          legendContainer.innerHTML += 
+              '<i style="background:black; opacity:0.25"></i> Confirmed cases<br>' +
+              '<i style="background:red; opacity:0.6"></i> Deaths<br>';
+                
+
+          return legendContainer;
+      };
+
+      legend.addTo(map);
+      
+      /**
+      * US states density map
+      */
+
+      var grayscaleMap2 = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+      // GeoJSON polygon layer
+      var polygonLayer = L.geoJSON(us_states, {style: polygonStyle});
+
+      // GeoJSON point layer
+      var pointLayer = L.geoJSON(us_cities, {filter: isCapitol, onEachFeature: showStateMarker});
+
+      var map2 = L.map('map_canvas2', {
+        center: [37.8, -96],
+        zoom: 4,
+        layers: [grayscaleMap2, polygonLayer, pointLayer]
+      });
+
+      var baseLayersMap2 = {
+        "Grayscale": grayscaleMap2
+      };
+
+      var overlaysMap2 = {
+        "Population Density": polygonLayer,
+        "Capitol Marker": pointLayer
+      };
+
+      L.control.layers(baseLayersMap2, overlaysMap2).addTo(map2);
+
+          function getStateColor(density) {
+          return density > 1000 ? '#800026' :
+                 density > 500  ? '#BD0026' :
+                 density > 200  ? '#E31A1C' :
+                 density > 100  ? '#FC4E2A' :
+                 density > 50   ? '#FD8D3C' :
+                 density > 10   ? '#FED976' :
+                                  '#FFEDA0';
+      }
+
+      function polygonStyle(feature) {
+          return {
+              fillColor: getStateColor(feature.properties.density),
+              weight: 2,
+              opacity: 1,
+              color: 'white',
+              dashArray: '2',
+              fillOpacity: 0.7
+          };
+      }
+
+      function isCapitol(feature) {
+          return feature.properties.capital === "2" ? true : false;
+      }
+
+      function showStateMarker(feature, layer) {
+        layer.on({
+          click: statePopup(feature, layer)
+        });
+      }
+
+      function statePopup(feature, layer) {
+        layer.bindPopup(feature.properties.name);
+      }
+
+      //Custom legend
+      var legend = L.control({position: 'bottomright'});
+
+      legend.onAdd = function (map) {
+          var legendContainer = L.DomUtil.create('div', 'info legend'),
+              density = [0, 10, 50, 100, 200, 500, 1000],
+              labels = [];
+
+          legendContainer.innerHTML += '<strong>Population Density</strong><br><strong>(People/mi<sup>2</sup>)</strong><br><br>';
+          for (var i = 0; i < density.length; i++) {
+              legendContainer.innerHTML +=
+                  '<i style="background:' + getStateColor(density[i] + 1) + '"></i> ' +
+                  density[i] + (density[i + 1] ? '&ndash;' + density[i + 1] + '<br>' : '+');
+          }
+
+          return legendContainer;
+      };
+
+      legend.addTo(map2);
+
+      </script>
+  </body>
 </html>
