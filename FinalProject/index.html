@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<title>Exercise 11</title>
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+   		<!-- Load Esri Leaflet from CDN -->
+		<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+   		<style>
+   			#map {
+		     width: 700px;
+		     height: 500px;
+		     margin-top: 10px;
+ 			}
+
+			#pageContent{
+				margin-top: 3px;
+		  	}
+ 			.center-screen {
+		  		position: fixed; 
+  				top: 50%;
+  				left: 50%;
+  				transform: translate(-50%, -50%);
+  				
+			}
+
+			.legend {
+			    line-height: 18px;
+			    color: #555;
+			}
+			.legend i {
+			    width: 18px;
+			    height: 18px;
+			    float: left;
+			    margin-right: 8px;
+			    opacity: 0.7;
+			}
+
+			body {
+              font-family: Arial, Helvetica, sans-serif;
+            }
+
+			.navbar {
+			  overflow: hidden;
+			  background-color: #333;
+			}
+
+			.navbar a {
+			  float: left;
+			  font-size: 16px;
+			  color: white;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+
+			.dropdown {
+			  float: left;
+			  overflow: hidden;
+			}
+
+			.dropdown .dropbtn {
+			  font-size: 16px;  
+			  border: none;
+			  outline: none;
+			  color: white;
+			  padding: 14px 16px;
+			  background-color: inherit;
+			  font-family: inherit;
+			  margin: 0;
+			}
+
+			.navbar a:hover, .dropdown:hover .dropbtn {
+			  background-color: red;
+			}
+
+			.dropdown-content {
+			  display: none;
+			  position: absolute;
+			  background-color: #f9f9f9;
+			  min-width: 160px;
+			  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			  z-index: 1;
+			}
+
+			.dropdown-content a {
+			  float: none;
+			  color: black;
+			  padding: 12px 16px;
+			  text-decoration: none;
+			  display: block;
+			  text-align: left;
+			}
+
+			.dropdown-content a:hover {
+			  background-color: #ddd;
+			}
+
+			.dropdown:hover .dropdown-content {
+			  display: block;
+			}
+   		</style>
+	</head>
+	<body>
+		<div class="navbar">
+          <a href="../index.html">Home</a>
+          <div class="dropdown">
+            <button class="dropbtn">Assignments 
+              <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="../exercise1/index.html">Exercise 1</a>
+              <a href="../exercise2/index.html">Exercise 2</a>
+              <a href="https://github.com/fanlan226/CRP458/blob/master/exercise3/AgriculturalDrainageWells.geojson">Exercise 3</a>
+              <a href="../exercise4/index.html">Exercise 4</a>
+              <a href="../exercise5/index.html">Exercise 5</a>
+              <a href="../exercise6/index.html">Exercise 6</a>
+              <a href="../exercise7/index.html">Exercise 7</a>
+              <a href="../exercise8/index.html">Exercise 8</a>
+              <a href="../exercise9/index.html">Exercise 9</a>
+              <a href="../exercise10/index.html">Exercise 10</a>
+              <a href="index.html">Exercise 11</a>
+              <a href="../assignment1/index.html">Assignment 1</a>
+              <a href="../assignment2/index.html">Assignment 2</a>
+            </div>
+          </div> 
+        </div>
+   		<div id='pageContent'>
+			<div id='map' class='center-screen'></div>
+    	</div>
+		<script>
+			var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmZhbjI2IiwiYSI6ImNrNnE0eDZyczBmMHAzbHJ1amM2Nm9hY2UifQ.q2Y-7-9p99WECl-ZUEAMFQ';
+
+			var grayscale = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+			var	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+			var cronaVirus_layer = L.esri.featureLayer({
+				url: 'https://services1.arcgis.com/0MSEUqKaxRlEPj5g/ArcGIS/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1',
+        		where: "Country_Region = 'US'",
+        		pointToLayer: function (feature, latlng) {
+                	return L.circleMarker(latlng, markerOptions);
+            	},
+            	style: function(feature) {
+	                return {
+	                  radius: getRaidus(feature.properties.Confirmed),
+	                };
+            	},
+            	onEachFeature: addPopups
+			});
+
+			var popupTemplate = "<h3>{Province_State}</h3>Confirmed: {Confirmed}<br>Deaths: {Deaths}<br>" ;
+
+        	var map = L.map('map', {
+				center: [37.8, -96],
+				zoom: 4,
+				layers: [grayscale, cronaVirus_layer]
+			});
+
+			var baseLayers = {
+				"Streets": streets,
+				"Grayscale": grayscale
+			};
+
+			var overlays = {
+				"Crona Virus": cronaVirus_layer
+			};
+
+			L.control.layers(baseLayers, overlays).addTo(map);
+
+			var markerOptions = {
+				fillColor: "red",
+	            color: "#000",
+	            weight: 1,
+	            opacity: 1,
+	            fillOpacity: 0.8
+			}
+
+			function addPopups(feature, layer) {
+            	layer.bindPopup(function(e){
+        			return L.Util.template(popupTemplate, e.feature.properties)
+      			});
+        	}
+
+        	function getRaidus(confirmedCases) {
+        		if (confirmedCases > 100000) {
+        			return confirmedCases / 6000;
+        		} else if (confirmedCases > 5000) {
+					return confirmedCases / 3000;
+        		} else if (confirmedCases > 3000) {
+        			return confirmedCases / 1500;
+        		} else if (confirmedCases > 1000) {
+    			  	return confirmedCases / 500;
+        		} else if (confirmedCases > 500) {
+        			return confirmedCases / 100;
+        		} else {
+        			return 20;
+        		}
+        	}
+
+			//Custom legend
+			// var legend = L.control({position: 'bottomright'});
+
+			// legend.onAdd = function (map) {
+			//     var legendContainer = L.DomUtil.create('div', 'info legend'),
+			//         confirmed_cases = [0, 3000, 5000, 10000, 20000, 50000, 100000],
+			//         labels = [];
+
+			//     for (var i = 0; i < confirmed_cases.length; i++) {
+			//         legendContainer.innerHTML +=
+			//             '<i style="background:' + getStateColor(confirmed_cases[i] + 1) + '"></i> ' +
+			//             confirmed_cases[i] + (confirmed_cases[i + 1] ? '&ndash;' + confirmed_cases[i + 1] + '<br>' : '+');
+			//     }
+
+			//     return legendContainer;
+			// };
+
+			// legend.addTo(map);
+   		</script>
+	</body>
+</html>
